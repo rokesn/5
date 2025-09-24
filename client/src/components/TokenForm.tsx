@@ -44,7 +44,6 @@ export default function TokenForm({ onSubmit, isLoading = false }: TokenFormProp
       logoFile: logoFile || undefined,
     };
     onSubmit(submissionData);
-    console.log("Token form submitted:", submissionData);
   };
 
   return (

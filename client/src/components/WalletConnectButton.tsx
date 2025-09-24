@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Wallet, Check } from "lucide-react";
 import { useState } from "react";
+import "@/types/wallet";
 
 interface WalletConnectButtonProps {
   connected?: boolean;
@@ -26,17 +27,65 @@ export default function WalletConnectButton({
 
   const handleConnect = async (walletType: string) => {
     setIsConnecting(true);
-    // Simulate connection delay
-    setTimeout(() => {
+    try {
+      // Real wallet connection will be implemented here
+      await connectWallet(walletType);
       onConnect?.(walletType);
+    } catch (error) {
+      console.error('Failed to connect wallet:', error);
+    } finally {
       setIsConnecting(false);
-      console.log(`${walletType} wallet connected`);
-    }, 1500);
+    }
   };
 
-  const handleDisconnect = () => {
-    onDisconnect?.();
-    console.log('Wallet disconnected');
+  const connectWallet = async (walletType: string) => {
+    // Detect and connect to the actual wallet
+    if (typeof window === 'undefined') return;
+    
+    let walletAdapter: any;
+    
+    switch (walletType) {
+      case 'phantom':
+        if (window.solana?.isPhantom) {
+          walletAdapter = window.solana;
+        } else {
+          throw new Error('Phantom wallet not found. Please install it from phantom.app');
+        }
+        break;
+      case 'solflare':
+        if (window.solflare) {
+          walletAdapter = window.solflare;
+        } else {
+          throw new Error('Solflare wallet not found. Please install it from solflare.com');
+        }
+        break;
+      case 'backpack':
+        if (window.backpack) {
+          walletAdapter = window.backpack;
+        } else {
+          throw new Error('Backpack wallet not found. Please install it from backpack.app');
+        }
+        break;
+      default:
+        throw new Error('Unsupported wallet type');
+    }
+    
+    // Connect to the wallet
+    await walletAdapter.connect();
+    return walletAdapter.publicKey?.toString();
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      // Disconnect from the actual wallet
+      if (window.solana?.disconnect) {
+        await window.solana.disconnect();
+      }
+      onDisconnect?.();
+    } catch (error) {
+      console.error('Failed to disconnect wallet:', error);
+      onDisconnect?.(); // Still disconnect from app state
+    }
   };
 
   if (connected && walletAddress) {

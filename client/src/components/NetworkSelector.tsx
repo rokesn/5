@@ -19,11 +19,9 @@ export default function NetworkSelector({
     if (network === selectedNetwork) return;
     
     setSwitching(true);
-    setTimeout(() => {
-      onNetworkChange(network);
-      setSwitching(false);
-      console.log(`Switched to ${network}`);
-    }, 800);
+    // Switch network immediately - no artificial delays
+    onNetworkChange(network);
+    setSwitching(false);
   };
 
   return (
