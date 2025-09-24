@@ -7,6 +7,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Coins, Zap } from "lucide-react";
+import "@/types/wallet";
 
 type AppState = "disconnected" | "connected" | "creating" | "success";
 
@@ -27,38 +28,85 @@ export default function Home() {
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [tokenResult, setTokenResult] = useState<TokenResult | null>(null);
 
-  const handleWalletConnect = (walletType: string) => {
-    // todo: remove mock functionality - replace with real wallet connection
-    const mockAddress = "H8k9v2zJ3L4m1N6p9Q8r7S5t4U3w2X1y0Z9a8B7c6D5e";
-    setWalletAddress(mockAddress);
-    setAppState("connected");
+  const handleWalletConnect = async (walletType: string) => {
+    try {
+      let walletAddress = '';
+      
+      switch (walletType) {
+        case 'phantom':
+          if (window.solana?.isPhantom) {
+            await window.solana.connect();
+            walletAddress = window.solana.publicKey?.toString() || '';
+          }
+          break;
+        case 'solflare':
+          if (window.solflare) {
+            await window.solflare.connect();
+            walletAddress = window.solflare.publicKey?.toString() || '';
+          }
+          break;
+        case 'backpack':
+          if (window.backpack) {
+            await window.backpack.connect();
+            walletAddress = window.backpack.publicKey?.toString() || '';
+          }
+          break;
+      }
+      
+      if (walletAddress) {
+        setWalletAddress(walletAddress);
+        setAppState("connected");
+      }
+    } catch (error) {
+      console.error('Failed to connect wallet:', error);
+    }
   };
 
-  const handleWalletDisconnect = () => {
+  const handleWalletDisconnect = async () => {
+    try {
+      // Disconnect from the actual wallet
+      if (window.solana?.disconnect) {
+        await window.solana.disconnect();
+      } else if (window.solflare?.disconnect) {
+        await window.solflare.disconnect();
+      } else if (window.backpack?.disconnect) {
+        await window.backpack.disconnect();
+      }
+    } catch (error) {
+      console.error('Failed to disconnect from wallet:', error);
+    }
+    
     setWalletAddress("");
     setAppState("disconnected");
     setTokenResult(null);
   };
 
-  const handleTokenSubmit = (data: any) => {
+  const handleTokenSubmit = async (data: any) => {
     setAppState("creating");
     
-    // todo: remove mock functionality - replace with real token creation
-    setTimeout(() => {
-      const mockResult: TokenResult = {
-        mintAddress: "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
-        tokenName: data.name,
-        tokenSymbol: data.symbol,
-        totalSupply: data.totalSupply * Math.pow(10, data.decimals),
-        decimals: data.decimals,
-        transactionSignature: "3J4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0A1B2C3D4E5F6G7H8I9J",
-        explorerUrl: `https://solscan.io/token/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM?cluster=${network}`,
-        network: network,
-      };
-      
-      setTokenResult(mockResult);
+    try {
+      // Real token creation implementation
+      const result = await createSolanaToken(data, walletAddress, network);
+      setTokenResult(result);
       setAppState("success");
-    }, 3000);
+    } catch (error) {
+      console.error('Failed to create token:', error);
+      setAppState("connected"); // Go back to form on error
+    }
+  };
+
+  const createSolanaToken = async (tokenData: any, walletAddress: string, network: "devnet" | "mainnet"): Promise<TokenResult> => {
+    // This will be implemented with real Solana SPL token creation
+    // For now, throw error to indicate implementation needed
+    throw new Error('Real Solana token creation not yet implemented. Please install @solana/web3.js and @solana/spl-token packages.');
+    
+    // Future implementation will:
+    // 1. Connect to Solana cluster (devnet/mainnet)
+    // 2. Create token mint
+    // 3. Create token account
+    // 4. Mint initial supply
+    // 5. Set up metadata if provided
+    // 6. Return actual transaction result
   };
 
   const handleCreateAnother = () => {
