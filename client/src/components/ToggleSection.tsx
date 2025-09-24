@@ -30,7 +30,7 @@ export default function ToggleSection({
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="crypto-card overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

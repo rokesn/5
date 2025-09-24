@@ -212,7 +212,42 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    min-height: 100vh;
+  }
+
+  /* Crypto-themed background effects */
+  .crypto-gradient {
+    background: linear-gradient(135deg, hsl(240, 100%, 60%) 0%, hsl(280, 100%, 70%) 100%);
+  }
+  
+  .crypto-card {
+    background: linear-gradient(135deg, hsl(225, 25%, 12%) 0%, hsl(240, 25%, 15%) 100%);
+    border: 1px solid hsl(240, 25%, 25%);
+    box-shadow: 0 8px 32px rgba(96, 165, 250, 0.1);
+  }
+
+  .crypto-glow {
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+  }
+
+  .crypto-button {
+    background: linear-gradient(135deg, hsl(240, 100%, 60%) 0%, hsl(280, 100%, 70%) 100%);
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .crypto-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(96, 165, 250, 0.4);
+  }
+
+  .crypto-glass {
+    background: rgba(15, 15, 35, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(96, 165, 250, 0.2);
   }
 }
 

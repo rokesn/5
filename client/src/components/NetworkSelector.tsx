@@ -27,21 +27,21 @@ export default function NetworkSelector({
   };
 
   return (
-    <Card>
-      <CardContent className="p-4">
+    <Card className="crypto-card">
+      <CardContent className="p-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-accent rounded-md">
+          <div className="flex items-center gap-4">
+            <div className="p-3 crypto-gradient rounded-lg">
               {selectedNetwork === "devnet" ? (
-                <TestTube className="h-4 w-4" />
+                <TestTube className="h-5 w-5 text-white" />
               ) : (
-                <Globe className="h-4 w-4" />
+                <Globe className="h-5 w-5 text-white" />
               )}
             </div>
             <div>
-              <p className="text-sm font-medium">Network</p>
-              <div className="flex items-center gap-2">
-                <Badge variant={selectedNetwork === "devnet" ? "secondary" : "default"}>
+              <p className="text-sm font-medium text-primary">Network</p>
+              <div className="flex items-center gap-3">
+                <Badge variant={selectedNetwork === "devnet" ? "secondary" : "default"} className="crypto-glow">
                   {selectedNetwork === "devnet" ? "Devnet" : "Mainnet"}
                 </Badge>
                 {switching && (
@@ -57,6 +57,7 @@ export default function NetworkSelector({
               size="sm"
               onClick={() => handleNetworkSwitch("devnet")}
               disabled={switching}
+              className={selectedNetwork === "devnet" ? "crypto-button" : "hover:bg-primary/10"}
               data-testid="button-network-devnet"
             >
               <TestTube className="h-3 w-3 mr-1" />
@@ -67,6 +68,7 @@ export default function NetworkSelector({
               size="sm"
               onClick={() => handleNetworkSwitch("mainnet")}
               disabled={switching}
+              className={selectedNetwork === "mainnet" ? "crypto-button" : "hover:bg-primary/10"}
               data-testid="button-network-mainnet"
             >
               <Globe className="h-3 w-3 mr-1" />

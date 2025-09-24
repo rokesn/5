@@ -41,16 +41,16 @@ export default function WalletConnectButton({
 
   if (connected && walletAddress) {
     return (
-      <Card className="border-primary/20">
-        <CardContent className="p-4">
+      <Card className="crypto-card border-primary/30 crypto-glow">
+        <CardContent className="p-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-md">
-                <Check className="h-4 w-4 text-primary" />
+            <div className="flex items-center gap-4">
+              <div className="p-3 crypto-gradient rounded-lg crypto-glow">
+                <Check className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium">Wallet Connected</p>
-                <p className="text-xs text-muted-foreground font-mono">
+                <p className="text-sm font-medium text-primary">Wallet Connected</p>
+                <p className="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-1 rounded">
                   {walletAddress.slice(0, 8)}...{walletAddress.slice(-8)}
                 </p>
               </div>
@@ -59,6 +59,7 @@ export default function WalletConnectButton({
               variant="outline"
               size="sm"
               onClick={handleDisconnect}
+              className="border-primary/30 hover:bg-primary/10"
               data-testid="button-disconnect-wallet"
             >
               Disconnect
@@ -70,31 +71,33 @@ export default function WalletConnectButton({
   }
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="text-center mb-6">
-          <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto mb-4">
-            <Wallet className="h-8 w-8 text-primary" />
+    <Card className="crypto-card">
+      <CardContent className="p-8">
+        <div className="text-center mb-8">
+          <div className="p-4 crypto-gradient rounded-full w-fit mx-auto mb-6 crypto-glow">
+            <Wallet className="h-10 w-10 text-white" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">Connect Your Wallet</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-xl font-semibold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Connect Your Wallet
+          </h3>
+          <p className="text-muted-foreground">
             Choose a wallet to connect to Solana and start creating tokens
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {WALLET_OPTIONS.map((wallet) => (
             <Button
               key={wallet.id}
               variant="outline"
-              className="w-full justify-start gap-3 h-12"
+              className="w-full justify-start gap-4 h-14 border-primary/20 hover:border-primary/40 hover:bg-primary/5 crypto-glow"
               onClick={() => handleConnect(wallet.id)}
               disabled={isConnecting}
               data-testid={`button-connect-${wallet.id}`}
             >
-              <span className="text-lg">{wallet.icon}</span>
-              <span>{wallet.name}</span>
-              {isConnecting && <span className="ml-auto text-xs">Connecting...</span>}
+              <span className="text-2xl">{wallet.icon}</span>
+              <span className="font-medium">{wallet.name}</span>
+              {isConnecting && <span className="ml-auto text-xs text-primary">Connecting...</span>}
             </Button>
           ))}
         </div>

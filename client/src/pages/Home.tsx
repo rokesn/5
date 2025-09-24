@@ -67,21 +67,37 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Minimal Header */}
-      <header className="bg-white border-b border-gray-100">
-        <div className="container mx-auto px-6 py-4">
+    <div className="min-h-screen relative">
+      {/* Crypto Background Pattern */}
+      <div className="fixed inset-0 opacity-10">
+        <div className="absolute inset-0" 
+             style={{
+               backgroundImage: `radial-gradient(circle at 1px 1px, rgba(96, 165, 250, 0.3) 1px, transparent 0)`,
+               backgroundSize: '20px 20px'
+             }}>
+        </div>
+      </div>
+      
+      {/* Crypto Header */}
+      <header className="relative z-10 crypto-glass border-b border-primary/20">
+        <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-50 rounded-lg">
-                <Coins className="h-6 w-6 text-blue-600" />
+            <div className="flex items-center gap-4">
+              <div className="p-3 crypto-gradient rounded-xl crypto-glow">
+                <Coins className="h-7 w-7 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Token Creator</h1>
-                <p className="text-sm text-gray-500">Create Solana SPL tokens</p>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  Solana Token Creator
+                </h1>
+                <p className="text-muted-foreground">Create SPL tokens on the blockchain</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
+              <Badge variant="outline" className="crypto-glow border-primary/30 text-primary">
+                <Zap className="h-3 w-3 mr-1" />
+                DeFi
+              </Badge>
               <ThemeToggle />
             </div>
           </div>
@@ -89,9 +105,9 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="bg-gray-50 min-h-screen">
-        <div className="container mx-auto px-6 py-8">
-          <div className="max-w-3xl mx-auto space-y-6">
+      <main className="relative z-10 py-12">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto space-y-8">
           
           {/* Network Selector - Always visible */}
           <NetworkSelector 

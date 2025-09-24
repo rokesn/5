@@ -86,11 +86,15 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
   return (
     <div className="space-y-6">
       {/* Basic Token Information */}
-      <Card>
+      <Card className="crypto-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Coins className="h-5 w-5 text-primary" />
-            Token Information
+          <CardTitle className="flex items-center gap-3">
+            <div className="p-2 crypto-gradient rounded-lg">
+              <Coins className="h-5 w-5 text-white" />
+            </div>
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Token Information
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -435,7 +439,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
 
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-teal-500 hover:bg-teal-600 text-white"
+                className="w-full h-12 crypto-button text-white font-semibold"
                 disabled={isLoading}
                 data-testid="button-create-token"
               >

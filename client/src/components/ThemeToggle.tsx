@@ -6,19 +6,15 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    // Initialize theme from localStorage or default to dark
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    const initialTheme = savedTheme || "dark";
+    // Force dark theme for crypto design
+    const initialTheme = "dark";
     setTheme(initialTheme);
-    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    document.documentElement.classList.add("dark");
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
-    console.log(`Switched to ${newTheme} theme`);
+    // Keep dark theme for crypto design
+    console.log("Dark theme locked for crypto design");
   };
 
   return (
