@@ -26,57 +26,48 @@ export default function Home() {
   const [appState, setAppState] = useState<AppState>("disconnected");
   const [network, setNetwork] = useState<"devnet" | "mainnet">("devnet");
   const [walletAddress, setWalletAddress] = useState<string>("");
+  const [connectedWalletType, setConnectedWalletType] = useState<string>("");
   const [tokenResult, setTokenResult] = useState<TokenResult | null>(null);
+  const [error, setError] = useState<string>("");
 
-  const handleWalletConnect = async (walletType: string) => {
-    try {
-      let walletAddress = '';
-      
-      switch (walletType) {
-        case 'phantom':
-          if (window.solana?.isPhantom) {
-            await window.solana.connect();
-            walletAddress = window.solana.publicKey?.toString() || '';
-          }
-          break;
-        case 'solflare':
-          if (window.solflare) {
-            await window.solflare.connect();
-            walletAddress = window.solflare.publicKey?.toString() || '';
-          }
-          break;
-        case 'backpack':
-          if (window.backpack) {
-            await window.backpack.connect();
-            walletAddress = window.backpack.publicKey?.toString() || '';
-          }
-          break;
-      }
-      
-      if (walletAddress) {
-        setWalletAddress(walletAddress);
-        setAppState("connected");
-      }
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-    }
+  const handleWalletConnect = (address: string, walletType: string) => {
+    setWalletAddress(address);
+    setConnectedWalletType(walletType);
+    setAppState("connected");
+    setError(""); // Clear any previous errors
+  };
+  
+  const handleWalletError = (errorMessage: string) => {
+    setError(errorMessage);
+    setAppState("disconnected");
   };
 
   const handleWalletDisconnect = async () => {
     try {
-      // Disconnect from the actual wallet
-      if (window.solana?.disconnect) {
-        await window.solana.disconnect();
-      } else if (window.solflare?.disconnect) {
-        await window.solflare.disconnect();
-      } else if (window.backpack?.disconnect) {
-        await window.backpack.disconnect();
+      // Disconnect from the correct wallet based on what was connected
+      switch (connectedWalletType) {
+        case 'phantom':
+          if (window.solana?.disconnect) {
+            await window.solana.disconnect();
+          }
+          break;
+        case 'solflare':
+          if (window.solflare?.disconnect) {
+            await window.solflare.disconnect();
+          }
+          break;
+        case 'backpack':
+          if (window.backpack?.disconnect) {
+            await window.backpack.disconnect();
+          }
+          break;
       }
     } catch (error) {
-      console.error('Failed to disconnect from wallet:', error);
+      console.error(`Failed to disconnect from ${connectedWalletType} wallet:`, error);
     }
     
     setWalletAddress("");
+    setConnectedWalletType("");
     setAppState("disconnected");
     setTokenResult(null);
   };
@@ -90,15 +81,16 @@ export default function Home() {
       setTokenResult(result);
       setAppState("success");
     } catch (error) {
-      console.error('Failed to create token:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create token';
+      setError(errorMessage);
       setAppState("connected"); // Go back to form on error
     }
   };
 
   const createSolanaToken = async (tokenData: any, walletAddress: string, network: "devnet" | "mainnet"): Promise<TokenResult> => {
-    // This will be implemented with real Solana SPL token creation
-    // For now, throw error to indicate implementation needed
-    throw new Error('Real Solana token creation not yet implemented. Please install @solana/web3.js and @solana/spl-token packages.');
+    // This will be implemented with real Solana SPL token creation once packages are installed
+    // For now, provide user-friendly error message
+    throw new Error('Token creation is not yet fully implemented. Please wait while we finish setting up the Solana integration.');
     
     // Future implementation will:
     // 1. Connect to Solana cluster (devnet/mainnet)
@@ -163,17 +155,37 @@ export default function Home() {
             onNetworkChange={setNetwork}
           />
 
-          {/* Wallet Connection */}
-          {appState === "disconnected" && (
-            <WalletConnectButton onConnect={handleWalletConnect} />
+          {/* Error Display */}
+          {error && (
+            <Card className="border-red-500/50 bg-red-500/10">
+              <CardContent className="p-4">
+                <p className="text-red-400 text-sm">{error}</p>
+              </CardContent>
+            </Card>
           )}
 
-          {/* Connected State - Show form directly */}
-          {(appState === "connected" || appState === "creating") && (
-            <AdvancedTokenForm 
-              onSubmit={handleTokenSubmit}
-              isLoading={appState === "creating"}
+          {/* Wallet Connection */}
+          {appState === "disconnected" && (
+            <WalletConnectButton 
+              onConnect={handleWalletConnect}
+              onError={handleWalletError}
             />
+          )}
+
+          {/* Connected State - Show wallet info and form */}
+          {(appState === "connected" || appState === "creating") && (
+            <>
+              <WalletConnectButton 
+                connected={true}
+                walletAddress={walletAddress}
+                connectedWalletType={connectedWalletType}
+                onDisconnect={handleWalletDisconnect}
+              />
+              <AdvancedTokenForm 
+                onSubmit={handleTokenSubmit}
+                isLoading={appState === "creating"}
+              />
+            </>
           )}
 
           {/* Success State */}
