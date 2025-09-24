@@ -1,89 +1,105 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Wallet, Check } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "@/types/wallet";
 
 interface WalletConnectButtonProps {
   connected?: boolean;
   walletAddress?: string;
-  onConnect?: (walletType: string) => void;
+  connectedWalletType?: string;
+  onConnect?: (walletAddress: string, walletType: string) => void;
   onDisconnect?: () => void;
+  onError?: (error: string) => void;
 }
 
-const WALLET_OPTIONS = [
-  { name: "Phantom", icon: "👻", id: "phantom" },
-  { name: "Solflare", icon: "☀️", id: "solflare" },
-  { name: "Backpack", icon: "🎒", id: "backpack" },
-];
+// Dynamic wallet detection - only show actually available wallets
+const getAvailableWallets = () => {
+  const wallets = [];
+  
+  if (typeof window !== 'undefined') {
+    if (window.solana?.isPhantom) {
+      wallets.push({ name: "Phantom", icon: "👻", id: "phantom", adapter: window.solana });
+    }
+    if (window.solflare) {
+      wallets.push({ name: "Solflare", icon: "☀️", id: "solflare", adapter: window.solflare });
+    }
+    if (window.backpack) {
+      wallets.push({ name: "Backpack", icon: "🎒", id: "backpack", adapter: window.backpack });
+    }
+  }
+  
+  return wallets;
+};
 
 export default function WalletConnectButton({
   connected = false,
   walletAddress,
+  connectedWalletType,
   onConnect,
   onDisconnect,
+  onError,
 }: WalletConnectButtonProps) {
   const [isConnecting, setIsConnecting] = useState(false);
+  const [availableWallets, setAvailableWallets] = useState(getAvailableWallets());
+  
+  // Refresh available wallets on component mount
+  useEffect(() => {
+    const checkWallets = () => setAvailableWallets(getAvailableWallets());
+    checkWallets();
+    // Check again after a brief delay in case wallets load asynchronously
+    const timeout = setTimeout(checkWallets, 1000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const handleConnect = async (walletType: string) => {
     setIsConnecting(true);
     try {
-      // Real wallet connection will be implemented here
-      await connectWallet(walletType);
-      onConnect?.(walletType);
+      const wallet = availableWallets.find(w => w.id === walletType);
+      if (!wallet) {
+        throw new Error(`${walletType} wallet is not installed or available`);
+      }
+      
+      // Connect to the wallet
+      await wallet.adapter.connect();
+      const walletAddress = wallet.adapter.publicKey?.toString();
+      
+      if (!walletAddress) {
+        throw new Error('Failed to get wallet address after connection');
+      }
+      
+      onConnect?.(walletAddress, walletType);
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to connect wallet';
+      onError?.(errorMessage);
     } finally {
       setIsConnecting(false);
     }
   };
 
-  const connectWallet = async (walletType: string) => {
-    // Detect and connect to the actual wallet
-    if (typeof window === 'undefined') return;
-    
-    let walletAdapter: any;
-    
-    switch (walletType) {
-      case 'phantom':
-        if (window.solana?.isPhantom) {
-          walletAdapter = window.solana;
-        } else {
-          throw new Error('Phantom wallet not found. Please install it from phantom.app');
-        }
-        break;
-      case 'solflare':
-        if (window.solflare) {
-          walletAdapter = window.solflare;
-        } else {
-          throw new Error('Solflare wallet not found. Please install it from solflare.com');
-        }
-        break;
-      case 'backpack':
-        if (window.backpack) {
-          walletAdapter = window.backpack;
-        } else {
-          throw new Error('Backpack wallet not found. Please install it from backpack.app');
-        }
-        break;
-      default:
-        throw new Error('Unsupported wallet type');
-    }
-    
-    // Connect to the wallet
-    await walletAdapter.connect();
-    return walletAdapter.publicKey?.toString();
-  };
-
   const handleDisconnect = async () => {
     try {
-      // Disconnect from the actual wallet
-      if (window.solana?.disconnect) {
-        await window.solana.disconnect();
+      // Disconnect from the correct wallet based on connected type
+      switch (connectedWalletType) {
+        case 'phantom':
+          if (window.solana?.disconnect) {
+            await window.solana.disconnect();
+          }
+          break;
+        case 'solflare':
+          if (window.solflare?.disconnect) {
+            await window.solflare.disconnect();
+          }
+          break;
+        case 'backpack':
+          if (window.backpack?.disconnect) {
+            await window.backpack.disconnect();
+          }
+          break;
       }
       onDisconnect?.();
     } catch (error) {
-      console.error('Failed to disconnect wallet:', error);
+      console.error(`Failed to disconnect from ${connectedWalletType} wallet:`, error);
       onDisconnect?.(); // Still disconnect from app state
     }
   };
@@ -135,20 +151,33 @@ export default function WalletConnectButton({
         </div>
 
         <div className="space-y-4">
-          {WALLET_OPTIONS.map((wallet) => (
-            <Button
-              key={wallet.id}
-              variant="outline"
-              className="w-full justify-start gap-4 h-14 border-primary/20 hover:border-primary/40 hover:bg-primary/5 crypto-glow"
-              onClick={() => handleConnect(wallet.id)}
-              disabled={isConnecting}
-              data-testid={`button-connect-${wallet.id}`}
-            >
-              <span className="text-2xl">{wallet.icon}</span>
-              <span className="font-medium">{wallet.name}</span>
-              {isConnecting && <span className="ml-auto text-xs text-primary">Connecting...</span>}
-            </Button>
-          ))}
+          {availableWallets.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">
+                No Solana wallets detected. Please install one of the following:
+              </p>
+              <div className="space-y-2 text-sm">
+                <p>• <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Phantom Wallet</a></p>
+                <p>• <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Solflare Wallet</a></p>
+                <p>• <a href="https://backpack.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Backpack Wallet</a></p>
+              </div>
+            </div>
+          ) : (
+            availableWallets.map((wallet) => (
+              <Button
+                key={wallet.id}
+                variant="outline"
+                className="w-full justify-start gap-4 h-14 border-primary/20 hover:border-primary/40 hover:bg-primary/5 crypto-glow"
+                onClick={() => handleConnect(wallet.id)}
+                disabled={isConnecting}
+                data-testid={`button-connect-${wallet.id}`}
+              >
+                <span className="text-2xl">{wallet.icon}</span>
+                <span className="font-medium">{wallet.name}</span>
+                {isConnecting && <span className="ml-auto text-xs text-primary">Connecting...</span>}
+              </Button>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>
