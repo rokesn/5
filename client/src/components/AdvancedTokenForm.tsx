@@ -445,7 +445,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                 {isLoading ? (
                   <LoadingSpinner size="sm" text="Creating Token..." />
                 ) : (
-                  "Connect Wallet"
+                  "Create Token"
                 )}
               </Button>
             </form>
