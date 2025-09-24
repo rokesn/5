@@ -35,6 +35,7 @@ export default function ToggleSection({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => setExpanded(!expanded)}
               className="p-1 hover:bg-accent rounded-sm"
               data-testid={`button-expand-${title.toLowerCase().replace(/\s+/g, '-')}`}

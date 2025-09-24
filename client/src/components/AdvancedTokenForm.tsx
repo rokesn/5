@@ -51,13 +51,6 @@ interface AdvancedTokenFormProps {
 
 export default function AdvancedTokenForm({ onSubmit, isLoading = false }: AdvancedTokenFormProps) {
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [enabledSections, setEnabledSections] = useState({
-    supplyChain: false,
-    royalty: false,
-    customAddress: false,
-    nftDetails: false,
-    additionalFeatures: false,
-  });
   
   const form = useForm<TokenFormData>({
     resolver: zodResolver(tokenFormSchema),
@@ -68,9 +61,9 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
       totalSupply: 1000000,
       description: "",
       metadataUri: "",
-      supplyLimit: undefined,
+      supplyLimit: 0,
       creatorAddress: "",
-      royaltyPercentage: undefined,
+      royaltyPercentage: 0,
       customField1: "",
       customField2: "",
       nftCollection: "",
@@ -89,12 +82,6 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
     console.log("Advanced token form submitted:", submissionData);
   };
 
-  const handleSectionToggle = (section: string, enabled: boolean) => {
-    setEnabledSections(prev => ({
-      ...prev,
-      [section]: enabled
-    }));
-  };
 
   return (
     <div className="space-y-6">
@@ -223,7 +210,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                 <ToggleSection
                   title="Supply Chain Metadata"
                   description="Configure metadata URI and supply controls"
-                  onToggle={(enabled) => handleSectionToggle('supplyChain', enabled)}
+                  onToggle={(enabled) => console.log(`Supply Chain section ${enabled ? 'enabled' : 'disabled'}`)}
                 >
                   <div className="space-y-4">
                     <FormField
@@ -254,7 +241,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                               type="number"
                               placeholder="Maximum supply limit"
                               {...field}
-                              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
                               data-testid="input-supply-limit"
                             />
                           </FormControl>
@@ -269,7 +256,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                 <ToggleSection
                   title="Royalty/Creator Information"
                   description="Set up royalties and creator details"
-                  onToggle={(enabled) => handleSectionToggle('royalty', enabled)}
+                  onToggle={(enabled) => console.log(`Royalty section ${enabled ? 'enabled' : 'disabled'}`)}
                 >
                   <div className="space-y-4">
                     <FormField
@@ -302,7 +289,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                               max="100"
                               placeholder="5"
                               {...field}
-                              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
                               data-testid="input-royalty-percentage"
                             />
                           </FormControl>
@@ -317,7 +304,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                 <ToggleSection
                   title="Custom Address Metadata"
                   description="Add custom metadata fields"
-                  onToggle={(enabled) => handleSectionToggle('customAddress', enabled)}
+                  onToggle={(enabled) => console.log(`Custom Address section ${enabled ? 'enabled' : 'disabled'}`)}
                 >
                   <div className="space-y-4">
                     <FormField
@@ -361,7 +348,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                 <ToggleSection
                   title="NFT Additional Details"
                   description="Configure NFT collection and external links"
-                  onToggle={(enabled) => handleSectionToggle('nftDetails', enabled)}
+                  onToggle={(enabled) => console.log(`NFT Details section ${enabled ? 'enabled' : 'disabled'}`)}
                 >
                   <div className="space-y-4">
                     <FormField
@@ -405,7 +392,7 @@ export default function AdvancedTokenForm({ onSubmit, isLoading = false }: Advan
                 <ToggleSection
                   title="Additional New Features"
                   description="Configure advanced token authorities"
-                  onToggle={(enabled) => handleSectionToggle('additionalFeatures', enabled)}
+                  onToggle={(enabled) => console.log(`Additional Features section ${enabled ? 'enabled' : 'disabled'}`)}
                 >
                   <div className="space-y-4">
                     <FormField
