@@ -1,7 +1,7 @@
 import { useState } from "react";
 import WalletConnectButton from "@/components/WalletConnectButton";
 import NetworkSelector from "@/components/NetworkSelector";
-import TokenForm from "@/components/TokenForm";
+import AdvancedTokenForm from "@/components/AdvancedTokenForm";
 import ResultCard from "@/components/ResultCard";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Card, CardContent } from "@/components/ui/card";
@@ -67,25 +67,21 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen bg-white">
+      {/* Minimal Header */}
+      <header className="bg-white border-b border-gray-100">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Coins className="h-6 w-6 text-primary" />
+              <div className="p-2 bg-blue-50 rounded-lg">
+                <Coins className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">Solana Token Creator</h1>
-                <p className="text-sm text-muted-foreground">Create SPL tokens with metadata</p>
+                <h1 className="text-xl font-semibold text-gray-900">Token Creator</h1>
+                <p className="text-sm text-gray-500">Create Solana SPL tokens</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="gap-1">
-                <Zap className="h-3 w-3" />
-                Beta
-              </Badge>
               <ThemeToggle />
             </div>
           </div>
@@ -93,8 +89,9 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto space-y-6">
+      <main className="bg-gray-50 min-h-screen">
+        <div className="container mx-auto px-6 py-8">
+          <div className="max-w-3xl mx-auto space-y-6">
           
           {/* Network Selector - Always visible */}
           <NetworkSelector 
@@ -107,52 +104,22 @@ export default function Home() {
             <WalletConnectButton onConnect={handleWalletConnect} />
           )}
 
-          {/* Connected State - Show wallet info and form */}
+          {/* Connected State - Show form directly */}
           {(appState === "connected" || appState === "creating") && (
-            <>
-              <WalletConnectButton
-                connected={true}
-                walletAddress={walletAddress}
-                onDisconnect={handleWalletDisconnect}
-              />
-              <TokenForm 
-                onSubmit={handleTokenSubmit}
-                isLoading={appState === "creating"}
-              />
-            </>
+            <AdvancedTokenForm 
+              onSubmit={handleTokenSubmit}
+              isLoading={appState === "creating"}
+            />
           )}
 
           {/* Success State */}
           {appState === "success" && tokenResult && (
-            <>
-              <WalletConnectButton
-                connected={true}
-                walletAddress={walletAddress}
-                onDisconnect={handleWalletDisconnect}
-              />
-              <ResultCard 
-                result={tokenResult}
-                onCreateAnother={handleCreateAnother}
-              />
-            </>
+            <ResultCard 
+              result={tokenResult}
+              onCreateAnother={handleCreateAnother}
+            />
           )}
-
-          {/* Info Card */}
-          <Card className="bg-accent/5 border-accent/20">
-            <CardContent className="p-4">
-              <div className="text-center space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  <strong>Current Network:</strong> {network === "devnet" ? "Devnet (Test)" : "Mainnet (Live)"}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {network === "devnet" 
-                    ? "Use devnet for testing. No real SOL required." 
-                    : "⚠️ Mainnet uses real SOL. All transactions are permanent."
-                  }
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          </div>
         </div>
       </main>
     </div>
