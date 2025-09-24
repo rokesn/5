@@ -1,95 +1,109 @@
 # Solana Token Creator Design Guidelines
 
 ## Design Approach
-**Utility-Focused Design System Approach** - This is a productivity tool where efficiency and functionality are paramount. Using a clean, minimal design system that prioritizes usability over visual flair.
-
-**Reference**: Drawing inspiration from **Linear** and **Notion** for their clean, focused interfaces that handle complex workflows elegantly.
+**Reference-Based Approach** - Drawing inspiration from **modern DeFi platforms** like Uniswap, Phantom Wallet, and Jupiter Exchange for their futuristic crypto aesthetic while maintaining the utility-focused functionality of the original design.
 
 ## Core Design Elements
 
 ### Color Palette
 **Dark Mode Primary** (default):
-- Background: `222 14% 9%` (deep charcoal)
-- Surface: `222 11% 13%` (elevated cards/forms)
-- Primary: `45 93% 58%` (Solana purple-inspired)
-- Text Primary: `210 40% 95%` (near white)
-- Text Secondary: `215 25% 70%` (muted)
-- Success: `142 76% 36%` (green for successful operations)
-- Error: `0 84% 60%` (red for errors)
-
-**Light Mode**:
-- Background: `0 0% 98%`
-- Surface: `0 0% 100%`
-- Primary: `45 93% 48%`
-- Text Primary: `222 84% 5%`
-- Text Secondary: `215 16% 47%`
+- Background: `240 15% 8%` (deep space blue-black)
+- Surface: `240 12% 12%` (elevated cards with subtle blue undertone)
+- Primary: `262 83% 58%` (vibrant Solana purple)
+- Secondary: `220 91% 65%` (electric blue accent)
+- Text Primary: `240 25% 95%` (near white with cool tone)
+- Text Secondary: `240 15% 70%` (muted blue-gray)
+- Success: `158 64% 52%` (cyan-green)
+- Error: `0 91% 71%` (bright error red)
 
 ### Typography
 - **Primary**: Inter (Google Fonts CDN)
 - **Monospace**: JetBrains Mono (for addresses, technical data)
-- Scale: text-sm, text-base, text-lg, text-xl, text-2xl only
+- **Accent**: Orbitron (for headers - futuristic feel)
+- Scale: text-sm, text-base, text-lg, text-xl, text-2xl, text-3xl
 
 ### Layout System
-**Tailwind Spacing**: Consistent use of units 2, 4, 6, 8, 12, 16
-- Micro spacing: `p-2, m-2`
-- Standard spacing: `p-4, gap-4, space-y-4`
-- Section spacing: `p-6, gap-6`
-- Major spacing: `p-8, my-8`
-- Container spacing: `p-12, my-16`
-
-## Component Library
-
-### Core Components
-1. **Wallet Connection Card**
-   - Prominent centered placement when disconnected
-   - Clean list of supported wallets with icons
-   - Connection status indicator
-
-2. **Token Creation Form**
-   - Single-column layout with logical grouping
-   - Floating labels or clear input labels
-   - Upload area with drag-and-drop for logo
-   - Network selector (Devnet/Mainnet toggle)
-
-3. **Progress States**
-   - Loading states for each transaction step
-   - Clear progress indicators during token creation
-   - Success state with mint address and actions
-
-4. **Result Card**
-   - Mint address with copy button
-   - Solscan link button
-   - Success confirmation with visual feedback
-
-### Navigation & Layout
-- **Single-page application** with state-based views
-- **Header**: Logo, network indicator, wallet connection status
-- **Main content**: Centered, max-width container
-- **No sidebar** - keep interface focused and uncluttered
-
-### Interactions
-- **Toast notifications** for errors and success states
-- **Copy-to-clipboard** functionality with visual feedback
-- **Loading spinners** during blockchain operations
-- **Form validation** with inline error messages
+**Tailwind Spacing**: Units 2, 4, 6, 8, 12, 16, 24
+- Micro: `p-2, gap-2`
+- Standard: `p-4, gap-4`
+- Cards: `p-6, gap-6`
+- Sections: `p-8, gap-8`
+- Major: `p-12, gap-12`
+- Hero: `py-24`
 
 ## Visual Treatment
-- **Minimal gradients**: Subtle background gradient from dark to slightly lighter dark
-- **Card elevation**: Soft shadows on form containers and result cards
-- **Border radius**: Consistent rounded corners (rounded-lg: 8px)
-- **Focus states**: Clear visual focus indicators for accessibility
 
-## Key UX Principles
-1. **Progressive disclosure**: Show only relevant steps based on wallet connection status
-2. **Clear feedback**: Every user action has immediate visual response
-3. **Error prevention**: Form validation and clear labeling
-4. **Recovery paths**: Clear error messages with suggested actions
-5. **Technical transparency**: Show transaction hashes and addresses clearly
+### Gradients & Effects
+**Primary Gradients**:
+- Hero background: `240 15% 8%` to `262 25% 15%` (deep space to purple)
+- Card backgrounds: `240 12% 12%` to `262 15% 18%` (subtle purple elevation)
+- Button gradients: `262 83% 58%` to `220 91% 65%` (purple to blue)
+
+**Visual Effects**:
+- Subtle grid overlay patterns on backgrounds
+- Glowing borders on active/focus states using box-shadow
+- Animated gradient borders on primary cards
+- Frosted glass effect (backdrop-blur) on floating elements
+- Subtle particle/dot patterns in hero section
+
+### Component Library
+
+**Hero Section**:
+- Full viewport height with animated gradient background
+- Floating glass-morphism cards
+- Animated connecting lines/nodes pattern
+- Central logo with glow effect
+
+**Wallet Connection**:
+- Glass-morphism card with gradient border
+- Wallet icons with subtle glow on hover
+- Connection status with animated pulse indicator
+
+**Token Creation Form**:
+- Multi-step wizard with progress indicators
+- Glass cards with gradient borders
+- Floating labels with neon accent colors
+- Upload area with animated border glow
+
+**Navigation**:
+- Minimal top bar with frosted glass background
+- Network selector with gradient pill design
+- Wallet status with connection indicator glow
+
+## Modern Crypto Elements
+
+### Blockchain Visual Language
+- Hexagonal patterns and geometric shapes
+- Connected node networks in backgrounds
+- Animated data streams or flowing particles
+- Circuit board inspired line patterns
+- Holographic text effects on key elements
+
+### Interactive States
+- Glow effects on hover (box-shadow with primary colors)
+- Smooth micro-animations using transform/translate
+- Loading states with animated gradient progress bars
+- Success states with expanding ring animations
+- Copy feedback with flash/glow effects
+
+## Layout Structure
+**Single-page application** with state-based sections:
+1. **Hero section** - Futuristic introduction with animated background
+2. **Connection section** - Wallet connection with glass-morphism design
+3. **Creation form** - Multi-step process with progress visualization
+4. **Results section** - Success state with glowing mint address display
 
 ## Mobile Considerations
-- **Responsive design** with mobile-first approach
-- **Touch-friendly** button sizes (minimum 44px height)
-- **Readable text** at mobile sizes
-- **Simplified layout** on smaller screens
+- Simplified gradient effects for performance
+- Larger touch targets (min 48px)
+- Reduced animation intensity
+- Stacked layout with maintained visual hierarchy
+- Optimized glass effects for mobile GPUs
 
-This design prioritizes clarity and functionality while maintaining a professional appearance suitable for blockchain interactions.
+## Images
+**Background Textures**:
+- Subtle dot matrix or circuit patterns as CSS background
+- No large hero images - rely on gradients and CSS effects
+- Icon assets from crypto-focused icon libraries
+
+This design creates a futuristic, crypto-native experience while maintaining the utility-focused approach essential for blockchain tooling.
